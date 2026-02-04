@@ -1,0 +1,19 @@
+{
+  "name": "dsg-poc",
+  "version": "1.0.0",
+  "description": "This is a project template for AEM-based applications. It is intended as a best-practice set of examples as well as a potential starting point to develop your own functionality.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VVasuAdobe/dsg-poc.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VVasuAdobe/dsg-poc/issues"
+  },
+  "homepage": "https://github.com/VVasuAdobe/dsg-poc#readme"
+}

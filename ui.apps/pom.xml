@@ -112,12 +112,12 @@
             <version>${project.version}</version>
         </dependency>
 
-   <!--     <dependency>
+        <dependency>
             <groupId>com.adobe.aem.assets</groupId>
             <artifactId>poc.ui.frontend</artifactId>
             <version>${project.version}</version>
             <type>zip</type>
-        </dependency> -->
+        </dependency>
 
 
         <dependency>
