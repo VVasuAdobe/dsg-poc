@@ -1,0 +1,6 @@
+{
+  "user.default":"dsg-service-user",
+  "user.mapping":[
+    "com.adobe.aem.assets.poc.core:dsg-service-user=[dsg-service-user]"
+  ]
+}

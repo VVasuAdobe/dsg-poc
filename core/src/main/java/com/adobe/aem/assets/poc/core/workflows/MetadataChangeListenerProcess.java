@@ -1,0 +1,115 @@
+package com.adobe.aem.assets.poc.core.workflows;
+
+import com.adobe.granite.workflow.WorkflowException;
+import com.adobe.granite.workflow.WorkflowSession;
+import com.adobe.granite.workflow.exec.WorkItem;
+import com.adobe.granite.workflow.exec.WorkflowProcess;
+import com.adobe.granite.workflow.metadata.MetaDataMap;
+import com.day.cq.dam.api.Asset;
+import com.day.cq.dam.api.Rendition;
+import com.day.cq.dam.commons.util.DamUtil;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.InputStreamBody;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Objects;
+
+
+@Component(service = WorkflowProcess.class, property = { "process.label = Metadata Change Listener" })
+public class MetadataChangeListenerProcess implements WorkflowProcess {
+
+	private static final Logger LOG = LoggerFactory.getLogger(MetadataChangeListenerProcess.class);
+	private static final String API_SERVER_DOMAIN = "https://localhost:3000/";
+	private static final String API_URL = "api/uploadAsset";
+	private static final String SERVICE_USER = "service-user";
+
+	@Reference
+	private ResourceResolverFactory resolverFactory;
+
+	@Override
+	public void execute(WorkItem item, WorkflowSession session, MetaDataMap args) throws WorkflowException {
+
+		String payloadPath = item.getWorkflowData().getPayload().toString();
+		try (ResourceResolver resolver = resolverFactory
+			.getServiceResourceResolver(Collections
+				.<String, Object>singletonMap(ResourceResolverFactory.SUBSERVICE, SERVICE_USER))) {
+			Resource resource = resolver.getResource(payloadPath);
+			if (null != resource){
+
+			Asset asset =DamUtil.resolveToAsset(resource);
+			LOG.error("______________asset__________{}",asset.getPath());
+			String apiResponse  = invokeHttpPost(asset);
+			LOG.debug("apiResponse {}", apiResponse);
+
+			}
+		} catch (LoginException e) {
+			LOG.error("______________catch__________ {}",e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
+
+
+
+	private String invokeHttpPost(Asset asset){
+		String apiResponse ="";
+		Rendition original = Objects.requireNonNull(asset).getOriginal();
+		LOG.debug("Original rendition Path: {}", original.getPath());
+
+
+		try (CloseableHttpClient client = HttpClients.createDefault()) {
+			InputStream assetStream = original.getStream();
+			String fileName = asset.getName();
+
+
+			String jsonBody =
+					"{"
+							+ "\"fileName\":\""+fileName+"\","
+							+ "\"originalPath\":\""+original.getPath()+"\","
+							+ "\"assetPath\":\""+asset.getPath()+"\","
+							+ "\"status\":\"CREATED\""
+							+ "}";
+			HttpPost post = new HttpPost(API_SERVER_DOMAIN + API_URL);
+			post.setHeader("Authorization", "Bearer <token>");
+			post.setHeader("Content-Type", "application/json");
+			post.setEntity(new StringEntity(jsonBody, StandardCharsets.UTF_8));
+			try (CloseableHttpResponse response = client.execute(post)) {
+				String responseBody = "";
+				if (response.getEntity() != null) {
+					responseBody = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+				}
+				// These are the “console.log equivalents” in Java:
+				LOG.error("Node call status: {}", response.getStatusLine().getStatusCode());
+				LOG.error("Node call response (first 300 chars): {}",
+					responseBody.length() > 300 ? responseBody.substring(0, 300) : responseBody);
+				int statusCode = response.getStatusLine().getStatusCode();
+
+			}
+			assetStream.close();
+		} catch (Exception e) {
+			LOG.error("Error calling external API", e);
+			apiResponse = e.getMessage() + ":::" + Arrays.toString(e.getStackTrace());
+			throw new RuntimeException(e);
+		}
+
+		return apiResponse;
+	}
+}
+
