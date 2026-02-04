@@ -15,10 +15,5 @@
   "bugs": {
     "url": "https://github.com/VVasuAdobe/dsg-poc/issues"
   },
-  "homepage": "https://github.com/VVasuAdobe/dsg-poc#readme",
-
-  "dependencies": {
-    "xxxx": "^3.0.4"
-  }
+  "homepage": "https://github.com/VVasuAdobe/dsg-poc#readme"
 }
-
