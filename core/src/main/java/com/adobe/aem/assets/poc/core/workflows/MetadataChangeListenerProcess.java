@@ -75,7 +75,7 @@ public class MetadataChangeListenerProcess implements WorkflowProcess {
 			LOG.error("--------------inside http try:");
 			String jsonBody =
 					"{\n" +
-						"\"outputFolder\" : \"/content/dam/poc/output-folder\" "+
+						"\"outputFolder\" : \"/content/dam/poc/output-folder\", "+
 						"    \"assets\":[{\n" +
 								"  \"fileName\": \""+fileName+"\",\n" +
 								"  \"sourceUrl\": \""+asset+"\",\n" +
