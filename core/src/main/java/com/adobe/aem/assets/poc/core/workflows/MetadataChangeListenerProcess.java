@@ -37,7 +37,7 @@ import java.util.Objects;
 public class MetadataChangeListenerProcess implements WorkflowProcess {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MetadataChangeListenerProcess.class);
-	private static final String API_SERVER_DOMAIN = "https://localhost:3000/";
+	private static final String API_SERVER_DOMAIN = "https://skateable-ivanna-vitreum.ngrok-free.dev/";
 	private static final String API_URL = "api/uploadAsset";
 	private static final String SERVICE_USER = "service-user";
 
