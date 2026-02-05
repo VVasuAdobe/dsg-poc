@@ -78,7 +78,7 @@ public class MetadataChangeListenerProcess implements WorkflowProcess {
 						"\"outputFolder\" : \"/content/dam/poc/output-folder\", "+
 						"    \"assets\":[{\n" +
 								"  \"fileName\": \""+fileName+"\",\n" +
-								"  \"sourceUrl\": \""+asset+"\",\n" +
+								"  \"sourceUrl\": \""+asset.getPath()+"\",\n" +
 								"  \"fileSize\": 3035\n" +
 								"    }]\n" +
 						"}";
