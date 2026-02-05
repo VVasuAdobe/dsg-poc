@@ -1,6 +1,6 @@
 {
   "scripts":[
-    "create service user dsg-service-user\r\nset ACL for dsg-service-user\r\n    allow jcr:all on /content/dsg\r\n  allow jcr:read on /content/dam\r\n   allow jcr:all on /content/experience-fragments/dsg\r\n allow jcr:all on /content/cq:tags\r\n allow jcr:all on /content/projects\r\n allow jcr:all on /content/dam/projects\r\n allow jcr:all on /content/dam/collections\r\n allow jcr:all on /var\r\n allow jcr:all on /home\r\n   allow jcr:read on /conf\r\n allow rep:write on /conf\r\nend"
+    "create service user dsg-service-user\r\nset ACL for dsg-service-user\r\n    allow jcr:all on /content/poc \r\n  allow jcr:read on /content/dam\r\n   allow jcr:all on /content/experience-fragments/dsg\r\n allow jcr:all on /content/cq:tags\r\n allow jcr:all on /content/projects\r\n allow jcr:all on /content/dam/projects\r\n allow jcr:all on /content/dam/collections\r\n allow jcr:all on /var\r\n allow jcr:all on /home\r\n   allow jcr:read on /conf\r\n allow rep:write on /conf\r\nend"
 
 
 
