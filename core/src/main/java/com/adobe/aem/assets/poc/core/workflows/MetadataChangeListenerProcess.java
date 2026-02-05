@@ -33,7 +33,7 @@ import java.util.Collections;
 import java.util.Objects;
 
 
-@Component(service = WorkflowProcess.class, property = { "process.label = Metadata Change Listener" })
+@Component(service = WorkflowProcess.class, property = { "process.label = POC - Metadata Change Listener" })
 public class MetadataChangeListenerProcess implements WorkflowProcess {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MetadataChangeListenerProcess.class);
@@ -48,6 +48,7 @@ public class MetadataChangeListenerProcess implements WorkflowProcess {
 	public void execute(WorkItem item, WorkflowSession session, MetaDataMap args) throws WorkflowException {
 
 		String payloadPath = item.getWorkflowData().getPayload().toString();
+		LOG.error("___________________________asset___________________{}",payloadPath);
 		try (ResourceResolver resolver = resolverFactory
 			.getServiceResourceResolver(Collections
 				.<String, Object>singletonMap(ResourceResolverFactory.SUBSERVICE, SERVICE_USER))) {
@@ -87,7 +88,7 @@ public class MetadataChangeListenerProcess implements WorkflowProcess {
 							+ "\"status\":\"CREATED\""
 							+ "}";
 			HttpPost post = new HttpPost(API_SERVER_DOMAIN + API_URL);
-			post.setHeader("Authorization", "Bearer <token>");
+			//post.setHeader("Authorization", "Bearer <token>");
 			post.setHeader("Content-Type", "application/json");
 			post.setEntity(new StringEntity(jsonBody, StandardCharsets.UTF_8));
 			try (CloseableHttpResponse response = client.execute(post)) {
