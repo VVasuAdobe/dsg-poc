@@ -52,12 +52,9 @@ public class MetadataChangeListenerProcess implements WorkflowProcess {
 		try (ResourceResolver resolver = resolverFactory
 			.getServiceResourceResolver(Collections
 				.<String, Object>singletonMap(ResourceResolverFactory.SUBSERVICE, SERVICE_USER))) {
-			LOG.error("___________________________Inside try__________________");
 			Resource resource = resolver.getResource(payloadPath);
 			if (null != resource){
-				LOG.error("___________________________null != resource_________________");
 			Asset asset =DamUtil.resolveToAsset(resource);
-			LOG.error("______________asset__________{}",asset.getPath());
 			String apiResponse  = invokeHttpPost(asset);
 			LOG.debug("apiResponse {}", apiResponse);
 
@@ -72,23 +69,18 @@ public class MetadataChangeListenerProcess implements WorkflowProcess {
 
 	private String invokeHttpPost(Asset asset){
 		String apiResponse ="";
-		Rendition original = Objects.requireNonNull(asset).getOriginal();
-		LOG.debug("Original rendition Path: {}", original.getPath());
-
-
 		try (CloseableHttpClient client = HttpClients.createDefault()) {
-			InputStream assetStream = original.getStream();
+
 			String fileName = asset.getName();
 			LOG.error("--------------inside http try:");
-
-
 			String jsonBody =
-					"{"
-							+ "\"fileName\":\""+fileName+"\","
-							+ "\"originalPath\":\""+original.getPath()+"\","
-							+ "\"assetPath\":\""+asset.getPath()+"\","
-							+ "\"status\":\"CREATED\""
-							+ "}";
+					"{\n" +
+						"    \"assets\":[{\n" +
+								"  \"fileName\": \""+fileName+"\",\n" +
+								"  \"sourceUrl\": \""+asset+"\",\n" +
+								"  \"fileSize\": 3035\n" +
+								"    }]\n" +
+						"}";
 			HttpPost post = new HttpPost(API_SERVER_DOMAIN + API_URL);
 			//post.setHeader("Authorization", "Bearer <token>");
 			LOG.error("-------------jsonBody__________:{}",jsonBody);
@@ -100,14 +92,9 @@ public class MetadataChangeListenerProcess implements WorkflowProcess {
 				if (response.getEntity() != null) {
 					responseBody = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
 				}
-				// These are the “console.log equivalents” in Java:
-				LOG.error("Node call status: {}", response.getStatusLine().getStatusCode());
-				LOG.error("Node call response (first 300 chars): {}",
-					responseBody.length() > 300 ? responseBody.substring(0, 300) : responseBody);
-				int statusCode = response.getStatusLine().getStatusCode();
 
 			}
-			assetStream.close();
+
 		} catch (Exception e) {
 			LOG.error("Error calling external API", e);
 			apiResponse = e.getMessage() + ":::" + Arrays.toString(e.getStackTrace());
