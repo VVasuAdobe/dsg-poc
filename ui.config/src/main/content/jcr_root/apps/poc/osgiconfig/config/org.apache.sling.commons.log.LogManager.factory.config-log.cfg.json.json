@@ -1,0 +1,5 @@
+{
+  "org.apache.sling.commons.log.names": ["com.adobe.aem.assets.poc.core.workflows"],
+  "org.apache.sling.commons.log.level": "debug",
+  "org.apache.sling.commons.log.file": "logs/error.log"
+}

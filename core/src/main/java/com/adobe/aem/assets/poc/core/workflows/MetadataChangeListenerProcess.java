@@ -52,9 +52,10 @@ public class MetadataChangeListenerProcess implements WorkflowProcess {
 		try (ResourceResolver resolver = resolverFactory
 			.getServiceResourceResolver(Collections
 				.<String, Object>singletonMap(ResourceResolverFactory.SUBSERVICE, SERVICE_USER))) {
+			LOG.error("___________________________Inside try__________________");
 			Resource resource = resolver.getResource(payloadPath);
 			if (null != resource){
-
+				LOG.error("___________________________null != resource_________________");
 			Asset asset =DamUtil.resolveToAsset(resource);
 			LOG.error("______________asset__________{}",asset.getPath());
 			String apiResponse  = invokeHttpPost(asset);
@@ -78,6 +79,7 @@ public class MetadataChangeListenerProcess implements WorkflowProcess {
 		try (CloseableHttpClient client = HttpClients.createDefault()) {
 			InputStream assetStream = original.getStream();
 			String fileName = asset.getName();
+			LOG.error("--------------inside http try:");
 
 
 			String jsonBody =
@@ -89,10 +91,12 @@ public class MetadataChangeListenerProcess implements WorkflowProcess {
 							+ "}";
 			HttpPost post = new HttpPost(API_SERVER_DOMAIN + API_URL);
 			//post.setHeader("Authorization", "Bearer <token>");
+			LOG.error("-------------jsonBody__________:{}",jsonBody);
 			post.setHeader("Content-Type", "application/json");
 			post.setEntity(new StringEntity(jsonBody, StandardCharsets.UTF_8));
 			try (CloseableHttpResponse response = client.execute(post)) {
 				String responseBody = "";
+				LOG.error("-------------inside http response __________:{}",response.toString());
 				if (response.getEntity() != null) {
 					responseBody = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
 				}
