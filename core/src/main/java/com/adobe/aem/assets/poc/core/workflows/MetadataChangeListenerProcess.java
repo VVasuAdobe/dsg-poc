@@ -49,62 +49,55 @@ public class MetadataChangeListenerProcess implements WorkflowProcess {
 	public void execute(WorkItem item, WorkflowSession session, MetaDataMap args) throws WorkflowException {
 
 		String payloadPath = item.getWorkflowData().getPayload().toString();
-		LOG.error("___________________________asset___________________{}",payloadPath);
+		LOG.error("Payload :{}",payloadPath);
 		try (ResourceResolver resolver = resolverFactory
 			.getServiceResourceResolver(Collections
 				.<String, Object>singletonMap(ResourceResolverFactory.SUBSERVICE, SERVICE_USER))) {
 			Resource resource = resolver.getResource(payloadPath);
 			if (null != resource){
+			// Getting asset from the payload
 			Asset asset =DamUtil.resolveToAsset(resource);
 			String destinationAsset =OUTPUT_FOLDER_PATH +"/" + asset.getName();
+				// check whether if asset already present in destination folder. If not, will proceed with creating new asset
 				if(null == resolver.getResource(destinationAsset)){
 					String apiResponse  = invokeHttpPost(asset);
-					LOG.debug("apiResponse {}", apiResponse);
+					LOG.debug("Api Response : {}", apiResponse);
 				}
 			}
 		} catch (LoginException e) {
-			LOG.error("______________catch__________ {}",e.getMessage());
+			LOG.error("Exception: {}",e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}
-
-
 
 	private String invokeHttpPost(Asset asset){
 		String apiResponse ="";
 		try (CloseableHttpClient client = HttpClients.createDefault()) {
 
 			String fileName = asset.getName();
-			LOG.error("--------------inside http try:");
 			String jsonBody =
-					"{\n" +
-						"\"outputFolder\" : \""+OUTPUT_FOLDER_PATH+"\", "+
-						"    \"assets\":[{\n" +
-								"  \"fileName\": \""+fileName+"\",\n" +
-								"  \"sourceUrl\": \""+asset.getPath()+"\",\n" +
-								"  \"fileSize\": 3035\n" +
-								"    }]\n" +
-						"}";
+				"{\n" +
+					"\"outputFolder\" : \""+OUTPUT_FOLDER_PATH+"\", "+
+					"    \"assets\":[{\n" +
+							"  \"fileName\": \""+fileName+"\",\n" +
+							"  \"sourceUrl\": \""+asset.getPath()+"\",\n" +
+							"  \"fileSize\": 3035\n" +
+							"    }]\n" +
+					"}";
 			HttpPost post = new HttpPost(API_SERVER_DOMAIN + API_URL);
-			//post.setHeader("Authorization", "Bearer <token>");
-			LOG.error("-------------jsonBody__________:{}",jsonBody);
 			post.setHeader("Content-Type", "application/json");
 			post.setEntity(new StringEntity(jsonBody, StandardCharsets.UTF_8));
 			try (CloseableHttpResponse response = client.execute(post)) {
 				String responseBody = "";
-				LOG.error("-------------inside http response __________:{}",response.toString());
 				if (response.getEntity() != null) {
 					responseBody = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
 				}
-
 			}
-
 		} catch (Exception e) {
 			LOG.error("Error calling external API", e);
 			apiResponse = e.getMessage() + ":::" + Arrays.toString(e.getStackTrace());
 			throw new RuntimeException(e);
 		}
-
 		return apiResponse;
 	}
 }
