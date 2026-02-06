@@ -40,6 +40,7 @@ public class MetadataChangeListenerProcess implements WorkflowProcess {
 	private static final String API_SERVER_DOMAIN = "https://skateable-ivanna-vitreum.ngrok-free.dev/";
 	private static final String API_URL = "api/uploadAsset";
 	private static final String SERVICE_USER = "service-user";
+	private static final String OUTPUT_FOLDER_PATH = "/content/dam/poc/output-folder";
 
 	@Reference
 	private ResourceResolverFactory resolverFactory;
@@ -55,9 +56,11 @@ public class MetadataChangeListenerProcess implements WorkflowProcess {
 			Resource resource = resolver.getResource(payloadPath);
 			if (null != resource){
 			Asset asset =DamUtil.resolveToAsset(resource);
-			String apiResponse  = invokeHttpPost(asset);
-			LOG.debug("apiResponse {}", apiResponse);
-
+			String destinationAsset =OUTPUT_FOLDER_PATH +"/" + asset.getName();
+				if(null == resolver.getResource(destinationAsset)){
+					String apiResponse  = invokeHttpPost(asset);
+					LOG.debug("apiResponse {}", apiResponse);
+				}
 			}
 		} catch (LoginException e) {
 			LOG.error("______________catch__________ {}",e.getMessage());
@@ -75,7 +78,7 @@ public class MetadataChangeListenerProcess implements WorkflowProcess {
 			LOG.error("--------------inside http try:");
 			String jsonBody =
 					"{\n" +
-						"\"outputFolder\" : \"/content/dam/poc/output-folder\", "+
+						"\"outputFolder\" : \""+OUTPUT_FOLDER_PATH+"\", "+
 						"    \"assets\":[{\n" +
 								"  \"fileName\": \""+fileName+"\",\n" +
 								"  \"sourceUrl\": \""+asset.getPath()+"\",\n" +
