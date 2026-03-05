@@ -39,7 +39,7 @@ public class MetadataChangeListenerProcess implements WorkflowProcess {
 	private static final Logger LOG = LoggerFactory.getLogger(MetadataChangeListenerProcess.class);
 	private static final String API_SERVER_DOMAIN = "https://skateable-ivanna-vitreum.ngrok-free.dev/";
 	private static final String API_URL = "api/uploadAsset";
-	private static final String SERVICE_USER = "service-user";
+	private static final String SERVICE_USER = "dsg-service-user";
 	private static final String OUTPUT_FOLDER_PATH = "/content/dam/poc/output-folder";
 
 	@Reference
@@ -101,4 +101,3 @@ public class MetadataChangeListenerProcess implements WorkflowProcess {
 		return apiResponse;
 	}
 }
-

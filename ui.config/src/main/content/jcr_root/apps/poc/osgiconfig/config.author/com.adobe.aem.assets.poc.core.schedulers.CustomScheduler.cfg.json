@@ -1,0 +1,7 @@
+{
+  "schedulerName": "$[env:SCHEDULER_NAME;default=Custom Scheduler]",
+  "enabled": "$[env:SCHEDULER_ENABLED;default=true]",
+  "hour": "$[env:SCHEDULER_HOUR;default=9]",
+  "minute": "$[env:SCHEDULER_MINUTE;default=0]",
+  "timeZone": "$[env:SCHEDULER_TIMEZONE;default=America/New_York]"
+}
