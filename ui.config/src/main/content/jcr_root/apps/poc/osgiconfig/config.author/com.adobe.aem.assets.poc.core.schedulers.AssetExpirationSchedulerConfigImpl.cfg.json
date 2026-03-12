@@ -1,0 +1,5 @@
+{
+  "enabled": "$[env:ASSET_EXP_SCHEDULER_ENABLED;default=true]",
+  "scheduledTime": "$[env:ASSET_EXP_SCHEDULER_TIME;default=11:29 AM IST]",
+  "rootPath": "$[env:ASSET_EXP_SCHEDULER_ROOT_PATH;default=/content/dam/assets]"
+}
